@@ -1,351 +1,766 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>100ピース ギフトパズル</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>🎁 100ピース ギフトパズル</title>
+
 
 <style>
+
+/* =====================================
+   基本
+===================================== */
+
 *{
   box-sizing:border-box;
 }
 
+html,
 body{
   margin:0;
+  padding:0;
+}
+
+body{
+
   background:#eef9ff;
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Noto Sans JP",
+    sans-serif;
+
   color:#333;
 }
 
+
+/* =====================================
+   コンテナ
+===================================== */
+
 .container{
+
+  width:100%;
+
   max-width:900px;
-  margin:auto;
+
+  margin:0 auto;
+
   padding:12px;
 }
 
+
+/* =====================================
+   タイトル
+===================================== */
+
 h1{
+
   text-align:center;
-  margin:5px 0 10px;
+
+  margin:5px 0 8px;
+
   font-size:24px;
+
+  font-weight:800;
 }
+
+
+/* =====================================
+   説明
+===================================== */
 
 .description{
+
   text-align:center;
+
   font-size:14px;
+
+  line-height:1.6;
+
   margin-bottom:10px;
 }
+
+
+/* =====================================
+   ボタンエリア
+===================================== */
 
 .controls{
+
   display:flex;
+
   flex-wrap:wrap;
-  gap:6px;
+
   justify-content:center;
+
+  align-items:center;
+
+  gap:7px;
+
   margin-bottom:10px;
 }
 
+
 button{
-  border:0;
+
+  border:none;
+
   border-radius:10px;
-  padding:9px 13px;
+
+  padding:9px 14px;
+
+  font-size:14px;
+
   font-weight:bold;
+
   background:#45b9e8;
+
   color:white;
+
   cursor:pointer;
+
+  box-shadow:
+    0 2px 5px rgba(0,0,0,.12);
 }
 
+
 button:hover{
+
   opacity:.85;
 }
 
-input[type="file"]{
-  max-width:220px;
+
+button:active{
+
+  transform:scale(.97);
 }
+
+
+input[type="file"]{
+
+  max-width:230px;
+
+  font-size:12px;
+}
+
+
+/* =====================================
+   カウンター
+===================================== */
 
 .counter{
+
   text-align:center;
+
+  font-size:19px;
+
   font-weight:bold;
-  font-size:18px;
-  margin:8px 0;
+
+  margin:8px 0 10px;
 }
+
+
+#count{
+
+  color:#159acb;
+
+  font-size:24px;
+}
+
+
+/* =====================================
+   パズル
+===================================== */
 
 .canvas-wrap{
+
   width:100%;
+
   max-width:600px;
-  margin:auto;
-  background:#9eddf4;
+
+  margin:0 auto;
+
   padding:8px;
-  border-radius:12px;
-  box-shadow:0 3px 12px rgba(0,0,0,.15);
+
+  background:#9eddf4;
+
+  border-radius:14px;
+
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.15);
 }
+
 
 canvas{
+
   display:block;
+
   width:100%;
+
   height:auto;
-  border-radius:6px;
-  touch-action:manipulation;
+
+  border-radius:7px;
+
   background:#9eddf4;
+
+  touch-action:manipulation;
+
+  cursor:pointer;
 }
+
+
+/* =====================================
+   ギフター一覧
+===================================== */
 
 .section-title{
+
   margin:20px 0 8px;
-  font-size:18px;
-  font-weight:bold;
+
   text-align:center;
+
+  font-size:18px;
+
+  font-weight:bold;
 }
+
 
 .gifter-grid{
+
   display:grid;
-  grid-template-columns:repeat(2,1fr);
+
+  grid-template-columns:
+    repeat(2, minmax(0,1fr));
+
   gap:5px;
 }
+
 
 .gifter-row{
+
   display:flex;
+
   align-items:center;
+
   gap:5px;
-  background:white;
-  border-radius:8px;
+
+  min-width:0;
+
   padding:5px;
+
+  background:white;
+
   border:1px solid #d8eaf2;
+
+  border-radius:8px;
+
+  transition:.2s;
 }
 
+
 .gifter-row.opened{
+
   background:#e5f8ff;
+
   border-color:#42bce8;
 }
 
+
 .gifter-number{
+
   width:35px;
-  text-align:center;
-  font-weight:bold;
+
   flex:none;
+
+  text-align:center;
+
+  font-weight:bold;
+
+  color:#168cb8;
 }
+
 
 .gifter-input{
+
   width:100%;
+
   min-width:0;
+
   border:1px solid #ccc;
+
   border-radius:6px;
+
   padding:7px;
+
   font-size:14px;
+
+  outline:none;
 }
+
+
+.gifter-input:focus{
+
+  border-color:#42bce8;
+}
+
 
 .gifter-status{
+
   width:28px;
-  text-align:center;
+
   flex:none;
+
+  text-align:center;
 }
+
+
+/* =====================================
+   ありがとうモーダル
+===================================== */
 
 .modal{
+
   position:fixed;
+
   inset:0;
+
   display:none;
+
   align-items:center;
+
   justify-content:center;
-  background:rgba(0,0,0,.55);
-  z-index:100;
+
   padding:20px;
+
+  background:rgba(0,0,0,.55);
+
+  z-index:100;
 }
 
+
 .modal.show{
+
   display:flex;
 }
 
+
 .modal-box{
+
   width:min(90%,420px);
-  background:white;
-  border-radius:20px;
+
   padding:25px 20px;
+
+  background:white;
+
+  border-radius:20px;
+
   text-align:center;
-  box-shadow:0 8px 30px rgba(0,0,0,.3);
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.3);
+
   animation:pop .2s ease;
 }
 
+
 @keyframes pop{
+
   from{
+
     transform:scale(.8);
+
     opacity:0;
   }
+
   to{
+
     transform:scale(1);
+
     opacity:1;
   }
+
 }
 
-.thanks{
-  font-size:28px;
-  font-weight:bold;
-  margin:15px 0;
-  color:#159acb;
-}
 
 .piece-number{
+
   font-size:15px;
+
   color:#777;
 }
 
-.complete{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.7);
-  z-index:200;
-  padding:20px;
+
+.thanks{
+
+  margin:15px 0;
+
+  color:#159acb;
+
+  font-size:28px;
+
+  font-weight:bold;
+
+  line-height:1.4;
+
+  word-break:break-word;
 }
 
+
+/* =====================================
+   完成モーダル
+===================================== */
+
+.complete{
+
+  position:fixed;
+
+  inset:0;
+
+  display:none;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:20px;
+
+  background:rgba(0,0,0,.7);
+
+  z-index:200;
+}
+
+
 .complete.show{
+
   display:flex;
 }
 
+
 .complete-box{
-  background:white;
+
+  width:min(90%,420px);
+
   padding:30px;
+
+  background:white;
+
   border-radius:20px;
+
   text-align:center;
-  max-width:420px;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.3);
 }
 
+
 .complete-box h2{
-  font-size:30px;
+
   margin:0 0 15px;
+
+  font-size:30px;
 }
+
+
+.complete-box p{
+
+  line-height:1.8;
+
+  font-size:16px;
+}
+
+
+/* =====================================
+   スマホ
+===================================== */
 
 @media(max-width:600px){
 
+  .container{
+
+    padding:8px;
+  }
+
+
   h1{
+
     font-size:20px;
   }
 
+
+  .description{
+
+    font-size:13px;
+  }
+
+
   .gifter-grid{
+
     grid-template-columns:1fr;
   }
 
+
   .thanks{
+
     font-size:24px;
   }
 
+
+  .canvas-wrap{
+
+    padding:5px;
+
+    border-radius:10px;
+  }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
-<h1>🎁 100ピース ギフトパズル</h1>
+
+<!-- =====================================
+     タイトル
+===================================== -->
+
+<h1>
+🎁 100ピース ギフトパズル
+</h1>
+
 
 <div class="description">
+
 ウルトラスタンプ1個で1ピースOPEN！<br>
-ピースをタップしてギフターさんに感謝を伝えよう！
+
+ピースをタップして
+ギフターさんに感謝を伝えよう💖
+
 </div>
+
+
+<!-- =====================================
+     操作
+===================================== -->
 
 <div class="controls">
 
+
 <label>
-<input type="file" id="imageInput" accept="image/*">
+
+<input
+  type="file"
+  id="imageInput"
+  accept="image/*"
+>
+
 </label>
 
+
 <button onclick="openRandomPiece()">
+
 🎲 ランダムOPEN
+
 </button>
+
 
 <button onclick="resetPuzzle()">
+
 🔄 リセット
+
 </button>
 
+
 </div>
+
+
+<!-- =====================================
+     カウンター
+===================================== -->
 
 <div class="counter">
-完成：<span id="count">0</span> / 100
+
+完成：
+<span id="count">0</span>
+ / 100
+
 </div>
+
+
+<!-- =====================================
+     パズル
+===================================== -->
 
 <div class="canvas-wrap">
+
 <canvas id="puzzleCanvas"></canvas>
+
 </div>
+
+
+<!-- =====================================
+     ギフター一覧
+===================================== -->
 
 <div class="section-title">
+
 💝 ギフターさん一覧
-</div>
-
-<div class="gifter-grid" id="gifterGrid"></div>
 
 </div>
 
 
-<!-- ありがとう表示 -->
+<div
+  class="gifter-grid"
+  id="gifterGrid"
+></div>
 
-<div class="modal" id="thanksModal">
-
-  <div class="modal-box">
-
-    <div class="piece-number">
-      ピース No.<span id="popupPiece"></span>
-    </div>
-
-    <div class="thanks">
-      <span id="popupName"></span>さんありがとう！💖
-    </div>
-
-    <button onclick="closeModal()">
-      閉じる
-    </button>
-
-  </div>
 
 </div>
 
 
-<!-- 完成表示 -->
 
-<div class="complete" id="completeModal">
+<!-- =====================================
+     ありがとうモーダル
+===================================== -->
 
-  <div class="complete-box">
+<div
+  class="modal"
+  id="thanksModal"
+>
 
-    <h2>🎉 完成！ 🎉</h2>
+<div class="modal-box">
 
-    <p>
-      100ピースのパズルが完成しました！
-    </p>
 
-    <p>
-      たくさんの応援<br>
-      ありがとうございました💖
-    </p>
+<div class="piece-number">
 
-    <button onclick="closeComplete()">
-      閉じる
-    </button>
-
-  </div>
+ピース No.
+<span id="popupPiece"></span>
 
 </div>
+
+
+<div class="thanks">
+
+<span id="popupName"></span>
+さんありがとう！💖
+
+</div>
+
+
+<button onclick="closeModal()">
+
+閉じる
+
+</button>
+
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================
+     完成モーダル
+===================================== -->
+
+<div
+  class="complete"
+  id="completeModal"
+>
+
+<div class="complete-box">
+
+
+<h2>
+
+🎉 完成！ 🎉
+
+</h2>
+
+
+<p>
+
+100ピースのパズルが完成しました！
+
+</p>
+
+
+<p>
+
+たくさんの応援<br>
+
+ありがとうございました💖
+
+</p>
+
+
+<button onclick="closeComplete()">
+
+閉じる
+
+</button>
+
+
+</div>
+
+</div>
+
 
 
 <script>
+
 
 /* =====================================
    基本設定
 ===================================== */
 
 const COLS = 10;
+
 const ROWS = 10;
+
 const TOTAL = 100;
 
+
+/*
+   正方形に変更
+   → 画像のようなパズル
+*/
+
+const W = 900;
+
+const H = 900;
+
+
 const canvas =
-  document.getElementById("puzzleCanvas");
+  document.getElementById(
+    "puzzleCanvas"
+  );
+
 
 const ctx =
   canvas.getContext("2d");
 
-const W = 900;
-const H = 1200;
 
 canvas.width = W;
+
 canvas.height = H;
+
 
 
 /* =====================================
@@ -355,11 +770,28 @@ canvas.height = H;
 let opened =
   new Array(TOTAL).fill(false);
 
+
 let gifterNames =
   new Array(TOTAL).fill("");
 
+
+/*
+   境界情報
+
+   verticalEdges
+   → 縦方向の境界
+
+   horizontalEdges
+   → 横方向の境界
+
+   1  = 凸方向
+  -1  = 凹方向
+*/
+
 let verticalEdges = [];
+
 let horizontalEdges = [];
+
 
 
 /* =====================================
@@ -368,10 +800,17 @@ let horizontalEdges = [];
 
 let image = new Image();
 
+
+/*
+   初期画像
+*/
+
 image.crossOrigin = "anonymous";
 
+
 image.src =
-"https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80";
+  "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80";
+
 
 
 /* =====================================
@@ -380,58 +819,110 @@ image.src =
 
 function generateEdges(){
 
+  /*
+     縦方向
+  */
+
   verticalEdges = [];
 
-  for(let r=0;r<ROWS;r++){
+
+  for(
+    let r = 0;
+    r < ROWS;
+    r++
+  ){
 
     const row = [];
 
-    for(let c=0;c<=COLS;c++){
 
-      if(c===0 || c===COLS){
+    for(
+      let c = 0;
+      c <= COLS;
+      c++
+    ){
+
+      /*
+         左端・右端はまっすぐ
+      */
+
+      if(
+        c === 0 ||
+        c === COLS
+      ){
 
         row.push(0);
 
       }else{
 
         row.push(
-          Math.random() > 0.5 ? 1 : -1
+          Math.random() < 0.5
+            ? 1
+            : -1
         );
 
       }
 
     }
 
+
     verticalEdges.push(row);
+
   }
 
+
+
+  /*
+     横方向
+  */
 
   horizontalEdges = [];
 
-  for(let r=0;r<=ROWS;r++){
+
+  for(
+    let r = 0;
+    r <= ROWS;
+    r++
+  ){
 
     const row = [];
 
-    for(let c=0;c<COLS;c++){
 
-      if(r===0 || r===ROWS){
+    for(
+      let c = 0;
+      c < COLS;
+      c++
+    ){
+
+      /*
+         上端・下端はまっすぐ
+      */
+
+      if(
+        r === 0 ||
+        r === ROWS
+      ){
 
         row.push(0);
 
       }else{
 
         row.push(
-          Math.random() > 0.5 ? 1 : -1
+          Math.random() < 0.5
+            ? 1
+            : -1
         );
 
       }
 
     }
 
+
     horizontalEdges.push(row);
+
   }
 
 }
+
 
 
 /* =====================================
@@ -440,134 +931,216 @@ function generateEdges(){
 
 function createPiecePath(row,col){
 
-  const cellW = W / COLS;
-  const cellH = H / ROWS;
+  const cellW =
+    W / COLS;
 
-  const x = col * cellW;
-  const y = row * cellH;
+
+  const cellH =
+    H / ROWS;
+
+
+  const x =
+    col * cellW;
+
+
+  const y =
+    row * cellH;
+
+
+  /*
+     凸部分の大きさ
+
+     画像のように
+     少し大きめの丸い形
+  */
 
   const tab =
-    Math.min(cellW,cellH) * 0.23;
-
-  const path = new Path2D();
+    Math.min(cellW,cellH) * 0.25;
 
 
-  /* 上 */
+  const path =
+    new Path2D();
 
-  path.moveTo(x,y);
+
+
+  /* =================================
+     上
+  ================================= */
+
+  path.moveTo(
+    x,
+    y
+  );
+
 
   const top =
     horizontalEdges[row][col];
 
-  if(top===0){
+
+  if(top === 0){
 
     path.lineTo(
-      x+cellW,
+      x + cellW,
       y
     );
 
   }else{
 
+    /*
+       左から少し直線
+    */
+
     path.lineTo(
-      x+cellW*0.35,
+      x + cellW * 0.35,
       y
     );
+
+
+    /*
+       丸い凸凹
+
+       上側のピースとの
+       接続方向を反転
+    */
 
     path.bezierCurveTo(
-      x+cellW*0.42,
-      y-top*tab,
-      x+cellW*0.58,
-      y-top*tab,
-      x+cellW*0.65,
+
+      x + cellW * 0.40,
+      y - top * tab,
+
+      x + cellW * 0.60,
+      y - top * tab,
+
+      x + cellW * 0.65,
       y
+
     );
 
+
     path.lineTo(
-      x+cellW,
+      x + cellW,
       y
     );
 
   }
 
 
-  /* 右 */
+
+  /* =================================
+     右
+  ================================= */
 
   const right =
-    verticalEdges[row][col+1];
+    verticalEdges[row][col + 1];
 
-  if(right===0){
+
+  if(right === 0){
 
     path.lineTo(
-      x+cellW,
-      y+cellH
+      x + cellW,
+      y + cellH
     );
 
   }else{
 
     path.lineTo(
-      x+cellW,
-      y+cellH*0.35
+
+      x + cellW,
+      y + cellH * 0.35
+
     );
+
 
     path.bezierCurveTo(
-      x+cellW+right*tab,
-      y+cellH*0.42,
-      x+cellW+right*tab,
-      y+cellH*0.58,
-      x+cellW,
-      y+cellH*0.65
+
+      x + cellW + right * tab,
+
+      y + cellH * 0.40,
+
+      x + cellW + right * tab,
+
+      y + cellH * 0.60,
+
+      x + cellW,
+
+      y + cellH * 0.65
+
     );
 
+
     path.lineTo(
-      x+cellW,
-      y+cellH
+
+      x + cellW,
+      y + cellH
+
     );
 
   }
 
 
-  /* 下 */
+
+  /* =================================
+     下
+  ================================= */
 
   const bottom =
-    horizontalEdges[row+1][col];
+    horizontalEdges[row + 1][col];
 
-  if(bottom===0){
+
+  if(bottom === 0){
 
     path.lineTo(
       x,
-      y+cellH
+      y + cellH
     );
 
   }else{
 
     path.lineTo(
-      x+cellW*0.65,
-      y+cellH
+
+      x + cellW * 0.65,
+      y + cellH
+
     );
+
 
     path.bezierCurveTo(
-      x+cellW*0.58,
-      y+cellH+bottom*tab,
-      x+cellW*0.42,
-      y+cellH+bottom*tab,
-      x+cellW*0.35,
-      y+cellH
+
+      x + cellW * 0.60,
+
+      y + cellH + bottom * tab,
+
+      x + cellW * 0.40,
+
+      y + cellH + bottom * tab,
+
+      x + cellW * 0.35,
+
+      y + cellH
+
     );
 
+
     path.lineTo(
+
       x,
-      y+cellH
+      y + cellH
+
     );
 
   }
 
 
-  /* 左 */
+
+  /* =================================
+     左
+  ================================= */
 
   const left =
     verticalEdges[row][col];
 
-  if(left===0){
+
+  if(left === 0){
 
     path.lineTo(
       x,
@@ -577,18 +1150,29 @@ function createPiecePath(row,col){
   }else{
 
     path.lineTo(
+
       x,
-      y+cellH*0.65
+      y + cellH * 0.65
+
     );
 
+
     path.bezierCurveTo(
-      x-left*tab,
-      y+cellH*0.58,
-      x-left*tab,
-      y+cellH*0.42,
+
+      x - left * tab,
+
+      y + cellH * 0.60,
+
+      x - left * tab,
+
+      y + cellH * 0.40,
+
       x,
-      y+cellH*0.35
+
+      y + cellH * 0.35
+
     );
+
 
     path.lineTo(
       x,
@@ -597,11 +1181,14 @@ function createPiecePath(row,col){
 
   }
 
+
   path.closePath();
+
 
   return path;
 
 }
+
 
 
 /* =====================================
@@ -614,36 +1201,57 @@ function drawImage(){
     !image.complete ||
     !image.naturalWidth
   ){
+
     return;
+
   }
+
+
+  /*
+     画像をパズルいっぱいに
+     cover表示
+  */
 
   const scale =
     Math.max(
-      W/image.naturalWidth,
-      H/image.naturalHeight
+
+      W / image.naturalWidth,
+
+      H / image.naturalHeight
+
     );
+
 
   const iw =
     image.naturalWidth * scale;
 
+
   const ih =
     image.naturalHeight * scale;
 
+
   const ix =
-    (W-iw)/2;
+    (W - iw) / 2;
+
 
   const iy =
-    (H-ih)/2;
+    (H - ih) / 2;
+
 
   ctx.drawImage(
+
     image,
+
     ix,
     iy,
+
     iw,
     ih
+
   );
 
 }
+
 
 
 /* =====================================
@@ -651,6 +1259,10 @@ function drawImage(){
 ===================================== */
 
 function drawPuzzle(){
+
+  /*
+     全体を裏面カラーにする
+  */
 
   ctx.clearRect(
     0,
@@ -660,12 +1272,9 @@ function drawPuzzle(){
   );
 
 
-  /*
-    未開封部分の裏面
-  */
-
   ctx.fillStyle =
     "#9eddf4";
+
 
   ctx.fillRect(
     0,
@@ -675,64 +1284,97 @@ function drawPuzzle(){
   );
 
 
-  /*
-    開封済みピース
-  */
 
-  for(let i=0;i<TOTAL;i++){
+  /* =================================
+     開いたピース
+  ================================= */
 
-    if(!opened[i]) continue;
+  for(
+    let i = 0;
+    i < TOTAL;
+    i++
+  ){
+
+    if(!opened[i]){
+
+      continue;
+
+    }
+
 
     const row =
-      Math.floor(i/COLS);
+      Math.floor(
+        i / COLS
+      );
+
 
     const col =
-      i%COLS;
+      i % COLS;
+
 
     const path =
-      createPiecePath(row,col);
+      createPiecePath(
+        row,
+        col
+      );
+
 
     ctx.save();
 
+
     ctx.clip(path);
 
+
     drawImage();
+
 
     ctx.restore();
 
   }
 
 
-  /*
-    ★重要
-    画像の繋ぎ目に裏面が残らないよう
-    ピース境界を太めに描画
-  */
 
-  ctx.lineWidth = 4;
+  /* =================================
+     ピース境界線
+  ================================= */
+
+  ctx.lineWidth = 2.5;
 
   ctx.strokeStyle =
-    "rgba(80,80,80,0.75)";
-
-  ctx.lineJoin = "round";
-
-  ctx.lineCap = "round";
+    "rgba(70,70,70,.78)";
 
 
-  for(let r=0;r<ROWS;r++){
+  ctx.lineJoin =
+    "round";
 
-    for(let c=0;c<COLS;c++){
+
+  ctx.lineCap =
+    "round";
+
+
+
+  for(
+    let r = 0;
+    r < ROWS;
+    r++
+  ){
+
+    for(
+      let c = 0;
+      c < COLS;
+      c++
+    ){
 
       const index =
-        r*COLS+c;
+        r * COLS + c;
+
 
       const path =
-        createPiecePath(r,c);
+        createPiecePath(
+          r,
+          c
+        );
 
-      /*
-        開いたピースは画像側の境界を強調。
-        未開封との境界も裏面が見えないよう処理。
-      */
 
       ctx.stroke(path);
 
@@ -741,79 +1383,124 @@ function drawPuzzle(){
   }
 
 
-  /*
-    未開封ピースの番号
-  */
+
+  /* =================================
+     未開封ピース番号
+  ================================= */
 
   const cellW =
-    W/COLS;
+    W / COLS;
+
 
   const cellH =
-    H/ROWS;
+    H / ROWS;
 
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
 
-  for(let i=0;i<TOTAL;i++){
+  ctx.textAlign =
+    "center";
 
-    if(opened[i]) continue;
+
+  ctx.textBaseline =
+    "middle";
+
+
+  for(
+    let i = 0;
+    i < TOTAL;
+    i++
+  ){
+
+    if(opened[i]){
+
+      continue;
+
+    }
+
 
     const row =
-      Math.floor(i/COLS);
+      Math.floor(
+        i / COLS
+      );
+
 
     const col =
-      i%COLS;
+      i % COLS;
+
 
     const x =
-      col*cellW;
+      col * cellW;
+
 
     const y =
-      row*cellH;
+      row * cellH;
 
 
     /*
-      番号の丸
+       番号の白丸
     */
 
     ctx.fillStyle =
-      "rgba(255,255,255,.9)";
+      "rgba(255,255,255,.90)";
+
 
     ctx.beginPath();
 
+
     ctx.arc(
-      x+cellW/2,
-      y+cellH/2,
-      Math.min(cellW,cellH)*.17,
+
+      x + cellW / 2,
+
+      y + cellH / 2,
+
+      Math.min(
+        cellW,
+        cellH
+      ) * .17,
+
       0,
-      Math.PI*2
+
+      Math.PI * 2
+
     );
+
 
     ctx.fill();
 
 
+
     /*
-      番号
+       番号
     */
 
     ctx.fillStyle =
       "#168cb8";
 
+
     ctx.font =
-      "bold "+
+      "bold " +
       Math.floor(
-        Math.min(cellW,cellH)*.18
-      )+
+        Math.min(
+          cellW,
+          cellH
+        ) * .18
+      ) +
       "px Arial";
 
+
     ctx.fillText(
-      i+1,
-      x+cellW/2,
-      y+cellH/2
+
+      i + 1,
+
+      x + cellW / 2,
+
+      y + cellH / 2
+
     );
 
   }
 
 }
+
 
 
 /* =====================================
@@ -827,42 +1514,76 @@ function createGifterList(){
       "gifterGrid"
     );
 
+
   grid.innerHTML = "";
 
 
-  for(let i=0;i<TOTAL;i++){
+  for(
+    let i = 0;
+    i < TOTAL;
+    i++
+  ){
 
     const row =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
+
 
     row.className =
       "gifter-row";
 
-    row.id =
-      "gifterRow-"+i;
 
+    row.id =
+      "gifterRow-" + i;
+
+
+    if(opened[i]){
+
+      row.classList.add(
+        "opened"
+      );
+
+    }
+
+
+
+    /* 番号 */
 
     const number =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
+
 
     number.className =
       "gifter-number";
 
-    number.textContent =
-      i+1;
 
+    number.textContent =
+      i + 1;
+
+
+
+    /* 名前 */
 
     const input =
-      document.createElement("input");
+      document.createElement(
+        "input"
+      );
+
 
     input.className =
       "gifter-input";
 
+
     input.placeholder =
       "ギフターさんの名前";
 
+
     input.value =
       gifterNames[i];
+
 
 
     input.addEventListener(
@@ -876,25 +1597,49 @@ function createGifterList(){
     );
 
 
+
+    /* 状態 */
+
     const status =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
+
 
     status.className =
       "gifter-status";
 
+
     status.textContent =
-      opened[i] ? "✅" : "";
+      opened[i]
+        ? "✅"
+        : "";
 
 
-    row.appendChild(number);
-    row.appendChild(input);
-    row.appendChild(status);
 
-    grid.appendChild(row);
+    row.appendChild(
+      number
+    );
+
+
+    row.appendChild(
+      input
+    );
+
+
+    row.appendChild(
+      status
+    );
+
+
+    grid.appendChild(
+      row
+    );
 
   }
 
 }
+
 
 
 /* =====================================
@@ -903,26 +1648,27 @@ function createGifterList(){
 
 function cleanName(name){
 
-  name = name.trim();
+  name =
+    name.trim();
 
-  /*
-    「さん」を付けて入力されていても
-    1回だけにする
-  */
 
-  if(name.endsWith("さん")){
+  if(
+    name.endsWith("さん")
+  ){
 
     name =
       name.substring(
         0,
-        name.length-2
+        name.length - 2
       );
 
   }
 
+
   return name;
 
 }
+
 
 
 /* =====================================
@@ -932,49 +1678,61 @@ function cleanName(name){
 function openPiece(index){
 
   if(
-    index<0 ||
-    index>=TOTAL
+    index < 0 ||
+    index >= TOTAL
   ){
+
     return;
+
   }
 
 
   const rawName =
     gifterNames[index].trim();
 
+
   const clean =
     cleanName(rawName);
 
 
-  /*
-    名前が空欄の場合
-  */
-
   const displayName =
-    clean || "ギフターさん";
+    clean ||
+    "ギフターさん";
 
+
+
+  /*
+     初めて開く
+  */
 
   if(!opened[index]){
 
     opened[index] = true;
 
-    updateGifterStatus(index);
+
+    updateGifterStatus(
+      index
+    );
+
 
     updateCounter();
+
 
     drawPuzzle();
 
   }
 
 
+
   /*
-    ポップアップ
+     ポップアップ
   */
 
   document.getElementById(
     "popupPiece"
   ).textContent =
-    index+1;
+    index + 1;
+
 
   document.getElementById(
     "popupName"
@@ -984,7 +1742,9 @@ function openPiece(index){
 
   document.getElementById(
     "thanksModal"
-  ).classList.add("show");
+  ).classList.add(
+    "show"
+  );
 
 
   checkComplete();
@@ -992,8 +1752,9 @@ function openPiece(index){
 }
 
 
+
 /* =====================================
-   パズルタップ
+   キャンバスタップ
 ===================================== */
 
 canvas.addEventListener(
@@ -1003,47 +1764,59 @@ canvas.addEventListener(
     const rect =
       canvas.getBoundingClientRect();
 
+
     const scaleX =
-      W/rect.width;
+      W / rect.width;
+
 
     const scaleY =
-      H/rect.height;
+      H / rect.height;
+
 
     const x =
-      (e.clientX-rect.left)*scaleX;
+      (e.clientX - rect.left)
+      * scaleX;
+
 
     const y =
-      (e.clientY-rect.top)*scaleY;
+      (e.clientY - rect.top)
+      * scaleY;
+
 
 
     const col =
       Math.floor(
-        x/(W/COLS)
+        x / (W / COLS)
       );
+
 
     const row =
       Math.floor(
-        y/(H/ROWS)
+        y / (H / ROWS)
       );
 
 
     if(
-      col<0 ||
-      col>=COLS ||
-      row<0 ||
-      row>=ROWS
+      col < 0 ||
+      col >= COLS ||
+      row < 0 ||
+      row >= ROWS
     ){
+
       return;
+
     }
 
 
     const index =
-      row*COLS+col;
+      row * COLS + col;
+
 
     openPiece(index);
 
   }
 );
+
 
 
 /* =====================================
@@ -1054,46 +1827,72 @@ function openRandomPiece(){
 
   const remaining = [];
 
-  for(let i=0;i<TOTAL;i++){
+
+  for(
+    let i = 0;
+    i < TOTAL;
+    i++
+  ){
 
     if(!opened[i]){
+
       remaining.push(i);
+
     }
 
   }
 
-  if(remaining.length===0){
+
+  /*
+     全部OPEN済み
+  */
+
+  if(
+    remaining.length === 0
+  ){
+
     return;
+
   }
 
 
   const index =
     remaining[
       Math.floor(
-        Math.random()*remaining.length
+        Math.random()
+        * remaining.length
       )
     ];
+
 
   openPiece(index);
 
 }
 
 
+
 /* =====================================
-   ギフター状態
+   ギフター状態更新
 ===================================== */
 
 function updateGifterStatus(index){
 
   const row =
     document.getElementById(
-      "gifterRow-"+index
+      "gifterRow-" + index
     );
 
-  if(!row) return;
+
+  if(!row){
+
+    return;
+
+  }
 
 
-  row.classList.add("opened");
+  row.classList.add(
+    "opened"
+  );
 
 
   const status =
@@ -1101,10 +1900,16 @@ function updateGifterStatus(index){
       ".gifter-status"
     );
 
-  status.textContent =
-    "✅";
+
+  if(status){
+
+    status.textContent =
+      "✅";
+
+  }
 
 }
+
 
 
 /* =====================================
@@ -1114,7 +1919,10 @@ function updateGifterStatus(index){
 function updateCounter(){
 
   const count =
-    opened.filter(Boolean).length;
+    opened.filter(
+      Boolean
+    ).length;
+
 
   document.getElementById(
     "count"
@@ -1124,13 +1932,18 @@ function updateCounter(){
 }
 
 
+
 /* =====================================
    完成判定
 ===================================== */
 
 function checkComplete(){
 
-  if(opened.every(Boolean)){
+  if(
+    opened.every(
+      Boolean
+    )
+  ){
 
     setTimeout(
       function(){
@@ -1139,7 +1952,9 @@ function checkComplete(){
           .getElementById(
             "completeModal"
           )
-          .classList.add("show");
+          .classList.add(
+            "show"
+          );
 
       },
       500
@@ -1150,8 +1965,9 @@ function checkComplete(){
 }
 
 
+
 /* =====================================
-   モーダル
+   ありがとうモーダル
 ===================================== */
 
 function closeModal(){
@@ -1160,10 +1976,17 @@ function closeModal(){
     .getElementById(
       "thanksModal"
     )
-    .classList.remove("show");
+    .classList.remove(
+      "show"
+    );
 
 }
 
+
+
+/* =====================================
+   完成モーダル
+===================================== */
 
 function closeComplete(){
 
@@ -1171,9 +1994,12 @@ function closeComplete(){
     .getElementById(
       "completeModal"
     )
-    .classList.remove("show");
+    .classList.remove(
+      "show"
+    );
 
 }
+
 
 
 /* =====================================
@@ -1182,27 +2008,45 @@ function closeComplete(){
 
 function resetPuzzle(){
 
-  if(
-    !confirm(
+  const ok =
+    confirm(
       "パズルを最初からやり直しますか？"
-    )
-  ){
+    );
+
+
+  if(!ok){
+
     return;
+
   }
 
 
+  /*
+     OPEN状態だけリセット
+
+     ギフターさんの名前は
+     そのまま残す
+  */
+
   opened =
-    new Array(TOTAL).fill(false);
+    new Array(
+      TOTAL
+    ).fill(false);
+
 
   generateEdges();
 
+
   createGifterList();
 
+
   updateCounter();
+
 
   drawPuzzle();
 
 }
+
 
 
 /* =====================================
@@ -1210,7 +2054,9 @@ function resetPuzzle(){
 ===================================== */
 
 document
-  .getElementById("imageInput")
+  .getElementById(
+    "imageInput"
+  )
   .addEventListener(
     "change",
     function(e){
@@ -1218,8 +2064,11 @@ document
       const file =
         e.target.files[0];
 
+
       if(!file){
+
         return;
+
       }
 
 
@@ -1233,6 +2082,7 @@ document
           image =
             new Image();
 
+
           image.onload =
             function(){
 
@@ -1240,16 +2090,20 @@ document
 
             };
 
+
           image.src =
             event.target.result;
 
         };
 
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(
+        file
+      );
 
     }
   );
+
 
 
 /* =====================================
@@ -1263,11 +2117,15 @@ image.onload =
 
     createGifterList();
 
+    updateCounter();
+
     drawPuzzle();
 
   };
 
+
 </script>
 
 </body>
+
 </html>
