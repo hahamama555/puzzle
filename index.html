@@ -14,6 +14,10 @@
 
 <style>
 
+/* =====================================
+   基本
+===================================== */
+
 *{
   box-sizing:border-box;
 }
@@ -41,6 +45,11 @@ body{
   padding:10px;
 }
 
+
+/* =====================================
+   タイトル
+===================================== */
+
 h1{
   text-align:center;
   margin:5px 0 8px;
@@ -54,6 +63,11 @@ h1{
   line-height:1.6;
   margin-bottom:10px;
 }
+
+
+/* =====================================
+   ボタン
+===================================== */
 
 .controls{
   display:flex;
@@ -89,6 +103,11 @@ input[type="file"]{
   font-size:12px;
 }
 
+
+/* =====================================
+   カウンター
+===================================== */
+
 .counter{
   text-align:center;
   margin:7px 0 10px;
@@ -100,6 +119,11 @@ input[type="file"]{
   color:#159acb;
   font-size:24px;
 }
+
+
+/* =====================================
+   パズル
+===================================== */
 
 .canvas-wrap{
   width:100%;
@@ -116,10 +140,15 @@ canvas{
   width:100%;
   height:auto;
   background:#9eddf4;
-  border-radius:7px;
+  border-radius:5px;
   touch-action:manipulation;
   cursor:pointer;
 }
+
+
+/* =====================================
+   ギフター一覧
+===================================== */
 
 .section-title{
   margin:20px 0 8px;
@@ -181,9 +210,54 @@ canvas{
 }
 
 
-/* ================================
+/* =====================================
+   画像読み込み中
+===================================== */
+
+.loading{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:15px;
+  background:rgba(255,255,255,.88);
+  z-index:500;
+}
+
+.loading.show{
+  display:flex;
+}
+
+.loading-spinner{
+  width:50px;
+  height:50px;
+  border:5px solid #d8f1fa;
+  border-top-color:#159acb;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+.loading-text{
+  color:#159acb;
+  font-size:18px;
+  font-weight:bold;
+  text-align:center;
+}
+
+@keyframes spin{
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+
+/* =====================================
    ありがとうモーダル
-================================ */
+===================================== */
 
 .modal{
   position:fixed;
@@ -239,9 +313,9 @@ canvas{
 }
 
 
-/* ================================
+/* =====================================
    完成
-================================ */
+===================================== */
 
 .complete{
   position:fixed;
@@ -278,9 +352,9 @@ canvas{
 }
 
 
-/* ================================
+/* =====================================
    スマホ
-================================ */
+===================================== */
 
 @media(max-width:600px){
 
@@ -304,6 +378,10 @@ canvas{
     font-size:24px;
   }
 
+  .loading-text{
+    font-size:16px;
+  }
+
 }
 
 </style>
@@ -313,11 +391,39 @@ canvas{
 
 <body>
 
+
+<!-- =====================================
+     画像読み込み中
+===================================== -->
+
+<div
+  class="loading"
+  id="loading"
+>
+
+  <div class="loading-spinner"></div>
+
+  <div class="loading-text">
+
+    画像を読み込み中…<br>
+    少々お待ちください
+
+  </div>
+
+</div>
+
+
 <div class="container">
+
+
+<!-- =====================================
+     タイトル
+===================================== -->
 
 <h1>
 🎁 100ピース ギフトパズル
 </h1>
+
 
 <div class="description">
 
@@ -328,6 +434,10 @@ canvas{
 
 </div>
 
+
+<!-- =====================================
+     操作
+===================================== -->
 
 <div class="controls">
 
@@ -354,6 +464,10 @@ canvas{
 </div>
 
 
+<!-- =====================================
+     カウンター
+===================================== -->
+
 <div class="counter">
 
 完成：
@@ -363,12 +477,20 @@ canvas{
 </div>
 
 
+<!-- =====================================
+     パズル
+===================================== -->
+
 <div class="canvas-wrap">
 
 <canvas id="puzzleCanvas"></canvas>
 
 </div>
 
+
+<!-- =====================================
+     ギフター一覧
+===================================== -->
 
 <div class="section-title">
 💝 ギフターさん一覧
@@ -380,74 +502,75 @@ canvas{
   id="gifterGrid"
 ></div>
 
+
 </div>
 
 
-<!-- ================================
+<!-- =====================================
      ありがとう
-================================ -->
+===================================== -->
 
 <div
   class="modal"
   id="thanksModal"
 >
 
-<div class="modal-box">
+  <div class="modal-box">
 
-<div class="piece-number">
+    <div class="piece-number">
 
-ピース No.
-<span id="popupPiece"></span>
+      ピース No.
+      <span id="popupPiece"></span>
+
+    </div>
+
+
+    <div class="thanks">
+
+      <span id="popupName"></span>
+      さんありがとう！💖
+
+    </div>
+
+
+    <button onclick="closeModal()">
+      閉じる
+    </button>
+
+  </div>
 
 </div>
 
 
-<div class="thanks">
-
-<span id="popupName"></span>
-さんありがとう！💖
-
-</div>
-
-
-<button onclick="closeModal()">
-閉じる
-</button>
-
-</div>
-
-</div>
-
-
-<!-- ================================
+<!-- =====================================
      完成
-================================ -->
+===================================== -->
 
 <div
   class="complete"
   id="completeModal"
 >
 
-<div class="complete-box">
+  <div class="complete-box">
 
-<h2>
-🎉 完成！ 🎉
-</h2>
+    <h2>
+      🎉 完成！ 🎉
+    </h2>
 
-<p>
-100ピースのパズルが完成しました！
-</p>
+    <p>
+      100ピースのパズルが完成しました！
+    </p>
 
-<p>
-たくさんの応援<br>
-ありがとうございました💖
-</p>
+    <p>
+      たくさんの応援<br>
+      ありがとうございました💖
+    </p>
 
-<button onclick="closeComplete()">
-閉じる
-</button>
+    <button onclick="closeComplete()">
+      閉じる
+    </button>
 
-</div>
+  </div>
 
 </div>
 
@@ -465,8 +588,15 @@ const TOTAL = 100;
 const W = 900;
 const H = 900;
 
+
+/* =====================================
+   Canvas
+===================================== */
+
 const canvas =
-  document.getElementById("puzzleCanvas");
+  document.getElementById(
+    "puzzleCanvas"
+  );
 
 const ctx =
   canvas.getContext("2d");
@@ -485,12 +615,9 @@ let opened =
 let gifterNames =
   new Array(TOTAL).fill("");
 
-let verticalEdges = [];
-let horizontalEdges = [];
-
 
 /* =====================================
-   初期画像
+   画像
 ===================================== */
 
 let image = new Image();
@@ -499,323 +626,6 @@ image.crossOrigin = "anonymous";
 
 image.src =
 "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80";
-
-
-/* =====================================
-   ジグソー境界生成
-===================================== */
-
-function generateEdges(){
-
-  verticalEdges = [];
-
-  for(let r = 0; r < ROWS; r++){
-
-    const row = [];
-
-    for(let c = 0; c <= COLS; c++){
-
-      if(c === 0 || c === COLS){
-
-        row.push(0);
-
-      }else{
-
-        row.push(
-          Math.random() < 0.5
-            ? 1
-            : -1
-        );
-
-      }
-
-    }
-
-    verticalEdges.push(row);
-
-  }
-
-
-  horizontalEdges = [];
-
-  for(let r = 0; r <= ROWS; r++){
-
-    const row = [];
-
-    for(let c = 0; c < COLS; c++){
-
-      if(r === 0 || r === ROWS){
-
-        row.push(0);
-
-      }else{
-
-        row.push(
-          Math.random() < 0.5
-            ? 1
-            : -1
-        );
-
-      }
-
-    }
-
-    horizontalEdges.push(row);
-
-  }
-
-}
-
-
-/* =====================================
-   ジグソーピース形状
-   ★ 丸い境目なし
-   ★ 隣同士で完全に共有
-===================================== */
-
-function createPiecePath(row,col){
-
-  const cellW = W / COLS;
-  const cellH = H / ROWS;
-
-  const x = col * cellW;
-  const y = row * cellH;
-
-  const tab =
-    Math.min(cellW,cellH) * 0.20;
-
-
-  const path = new Path2D();
-
-
-  /* =================================
-     上
-  ================================= */
-
-  const top =
-    horizontalEdges[row][col];
-
-
-  path.moveTo(x,y);
-
-
-  if(top === 0){
-
-    path.lineTo(
-      x + cellW,
-      y
-    );
-
-  }else{
-
-    path.lineTo(
-      x + cellW * 0.35,
-      y
-    );
-
-    path.lineTo(
-      x + cellW * 0.42,
-      y
-    );
-
-    path.lineTo(
-      x + cellW * 0.46,
-      y - top * tab
-    );
-
-    path.lineTo(
-      x + cellW * 0.54,
-      y - top * tab
-    );
-
-    path.lineTo(
-      x + cellW * 0.58,
-      y
-    );
-
-    path.lineTo(
-      x + cellW * 0.65,
-      y
-    );
-
-    path.lineTo(
-      x + cellW,
-      y
-    );
-
-  }
-
-
-  /* =================================
-     右
-  ================================= */
-
-  const right =
-    verticalEdges[row][col + 1];
-
-
-  if(right === 0){
-
-    path.lineTo(
-      x + cellW,
-      y + cellH
-    );
-
-  }else{
-
-    path.lineTo(
-      x + cellW,
-      y + cellH * 0.35
-    );
-
-    path.lineTo(
-      x + cellW,
-      y + cellH * 0.42
-    );
-
-    path.lineTo(
-      x + cellW + right * tab,
-      y + cellH * 0.46
-    );
-
-    path.lineTo(
-      x + cellW + right * tab,
-      y + cellH * 0.54
-    );
-
-    path.lineTo(
-      x + cellW,
-      y + cellH * 0.58
-    );
-
-    path.lineTo(
-      x + cellW,
-      y + cellH * 0.65
-    );
-
-    path.lineTo(
-      x + cellW,
-      y + cellH
-    );
-
-  }
-
-
-  /* =================================
-     下
-  ================================= */
-
-  const bottom =
-    horizontalEdges[row + 1][col];
-
-
-  if(bottom === 0){
-
-    path.lineTo(
-      x,
-      y + cellH
-    );
-
-  }else{
-
-    path.lineTo(
-      x + cellW * 0.65,
-      y + cellH
-    );
-
-    path.lineTo(
-      x + cellW * 0.58,
-      y + cellH
-    );
-
-    path.lineTo(
-      x + cellW * 0.54,
-      y + cellH + bottom * tab
-    );
-
-    path.lineTo(
-      x + cellW * 0.46,
-      y + cellH + bottom * tab
-    );
-
-    path.lineTo(
-      x + cellW * 0.42,
-      y + cellH
-    );
-
-    path.lineTo(
-      x + cellW * 0.35,
-      y + cellH
-    );
-
-    path.lineTo(
-      x,
-      y + cellH
-    );
-
-  }
-
-
-  /* =================================
-     左
-  ================================= */
-
-  const left =
-    verticalEdges[row][col];
-
-
-  if(left === 0){
-
-    path.lineTo(
-      x,
-      y
-    );
-
-  }else{
-
-    path.lineTo(
-      x,
-      y + cellH * 0.65
-    );
-
-    path.lineTo(
-      x,
-      y + cellH * 0.58
-    );
-
-    path.lineTo(
-      x - left * tab,
-      y + cellH * 0.54
-    );
-
-    path.lineTo(
-      x - left * tab,
-      y + cellH * 0.46
-    );
-
-    path.lineTo(
-      x,
-      y + cellH * 0.42
-    );
-
-    path.lineTo(
-      x,
-      y + cellH * 0.35
-    );
-
-    path.lineTo(
-      x,
-      y
-    );
-
-  }
-
-
-  path.closePath();
-
-  return path;
-
-}
 
 
 /* =====================================
@@ -834,6 +644,11 @@ function drawImage(){
 
   }
 
+
+  /*
+     正方形900×900に
+     画像を中央トリミング
+  */
 
   const scale =
     Math.max(
@@ -869,11 +684,21 @@ function drawImage(){
 
 /* =====================================
    パズル描画
+   ★ 完全な正方形100個
 ===================================== */
 
 function drawPuzzle(){
 
-  /* 背景 */
+  const cellW =
+    W / COLS;
+
+  const cellH =
+    H / ROWS;
+
+
+  /*
+     背景
+  */
 
   ctx.clearRect(
     0,
@@ -893,9 +718,9 @@ function drawPuzzle(){
   );
 
 
-  /* =================================
+  /*
      OPEN済みピース
-  ================================= */
+  */
 
   for(let i = 0; i < TOTAL; i++){
 
@@ -911,75 +736,105 @@ function drawPuzzle(){
       i % COLS;
 
 
-    const path =
-      createPiecePath(
-        row,
-        col
-      );
+    const x =
+      col * cellW;
 
+    const y =
+      row * cellH;
+
+
+    /*
+       その正方形だけ画像表示
+    */
 
     ctx.save();
 
-    ctx.clip(path);
+    ctx.beginPath();
+
+    ctx.rect(
+      x,
+      y,
+      cellW,
+      cellH
+    );
+
+    ctx.clip();
+
 
     drawImage();
+
 
     ctx.restore();
 
   }
 
 
-  /* =================================
-     境界線
-  ================================= */
+  /*
+     正方形の境界線
+  */
 
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 2;
 
   ctx.strokeStyle =
     "rgba(55,65,70,.85)";
 
-  ctx.lineJoin =
-    "round";
 
-  ctx.lineCap =
-    "round";
+  for(let r = 0; r <= ROWS; r++){
+
+    const y =
+      r * cellH;
 
 
-  for(let r = 0; r < ROWS; r++){
+    ctx.beginPath();
 
-    for(let c = 0; c < COLS; c++){
+    ctx.moveTo(
+      0,
+      y
+    );
 
-      const path =
-        createPiecePath(
-          r,
-          c
-        );
+    ctx.lineTo(
+      W,
+      y
+    );
 
-      ctx.stroke(path);
-
-    }
+    ctx.stroke();
 
   }
 
 
-  /* =================================
-     未OPENピース番号
+  for(let c = 0; c <= COLS; c++){
+
+    const x =
+      c * cellW;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      x,
+      0
+    );
+
+    ctx.lineTo(
+      x,
+      H
+    );
+
+    ctx.stroke();
+
+  }
+
+
+  /*
+     未OPEN番号
      ★ 丸なし
-  ================================= */
-
-  const cellW =
-    W / COLS;
-
-  const cellH =
-    H / ROWS;
-
+  */
 
   ctx.textAlign =
     "center";
 
   ctx.textBaseline =
     "middle";
-
 
   for(let i = 0; i < TOTAL; i++){
 
@@ -1002,10 +857,6 @@ function drawPuzzle(){
       row * cellH;
 
 
-    /*
-       番号だけ表示
-    */
-
     ctx.fillStyle =
       "#168cb8";
 
@@ -1013,7 +864,7 @@ function drawPuzzle(){
     ctx.font =
       "bold " +
       Math.floor(
-        Math.min(cellW,cellH) * .20
+        cellW * .20
       ) +
       "px Arial";
 
@@ -1116,13 +967,21 @@ function createGifterList(){
         : "";
 
 
-    row.appendChild(number);
+    row.appendChild(
+      number
+    );
 
-    row.appendChild(input);
+    row.appendChild(
+      input
+    );
 
-    row.appendChild(status);
+    row.appendChild(
+      status
+    );
 
-    grid.appendChild(row);
+    grid.appendChild(
+      row
+    );
 
   }
 
@@ -1186,6 +1045,10 @@ function openPiece(index){
     "ギフターさん";
 
 
+  /*
+     未OPENならOPEN
+  */
+
   if(!opened[index]){
 
     opened[index] = true;
@@ -1203,6 +1066,10 @@ function openPiece(index){
 
   }
 
+
+  /*
+     ありがとう表示
+  */
 
   document.getElementById(
     "popupPiece"
@@ -1229,7 +1096,7 @@ function openPiece(index){
 
 
 /* =====================================
-   キャンバスタップ
+   Canvasタップ
 ===================================== */
 
 canvas.addEventListener(
@@ -1310,6 +1177,10 @@ function openRandomPiece(){
 
   }
 
+
+  /*
+     全部OPEN済み
+  */
 
   if(
     remaining.length === 0
@@ -1421,7 +1292,7 @@ function checkComplete(){
 
 
 /* =====================================
-   モーダル
+   ありがとう閉じる
 ===================================== */
 
 function closeModal(){
@@ -1436,6 +1307,10 @@ function closeModal(){
 
 }
 
+
+/* =====================================
+   完成画面閉じる
+===================================== */
 
 function closeComplete(){
 
@@ -1473,8 +1348,6 @@ function resetPuzzle(){
     ).fill(false);
 
 
-  generateEdges();
-
   createGifterList();
 
   updateCounter();
@@ -1503,9 +1376,28 @@ document
       }
 
 
+      /*
+         読み込み表示
+      */
+
+      const loading =
+        document.getElementById(
+          "loading"
+        );
+
+
+      loading.classList.add(
+        "show"
+      );
+
+
       const reader =
         new FileReader();
 
+
+      /*
+         FileReader成功
+      */
 
       reader.onload =
         function(event){
@@ -1514,19 +1406,83 @@ document
             new Image();
 
 
+          /*
+             画像読み込み成功
+          */
+
           newImage.onload =
             function(){
 
               image =
                 newImage;
 
+
+              /*
+                 パズル更新
+              */
+
               drawPuzzle();
+
+
+              /*
+                 少し表示してから
+                 ローディング終了
+              */
+
+              setTimeout(
+                function(){
+
+                  loading.classList.remove(
+                    "show"
+                  );
+
+                },
+                300
+              );
+
+            };
+
+
+          /*
+             画像読み込み失敗
+          */
+
+          newImage.onerror =
+            function(){
+
+              loading.classList.remove(
+                "show"
+              );
+
+
+              alert(
+                "画像を読み込めませんでした。"
+              );
 
             };
 
 
           newImage.src =
             event.target.result;
+
+        };
+
+
+      /*
+         FileReader失敗
+      */
+
+      reader.onerror =
+        function(){
+
+          loading.classList.remove(
+            "show"
+          );
+
+
+          alert(
+            "画像を読み込めませんでした。"
+          );
 
         };
 
@@ -1541,14 +1497,16 @@ document
    初期化
 ===================================== */
 
-generateEdges();
-
 createGifterList();
 
 updateCounter();
 
 drawPuzzle();
 
+
+/*
+   初期画像読み込み
+*/
 
 image.onload =
   function(){
