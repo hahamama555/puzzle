@@ -1,1 +1,2078 @@
-# puzzle
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+               maximum-scale=1.0, user-scalable=no">
+
+<title>100ピースギフトパズル</title>
+
+<style>
+
+/* =========================
+   全体
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 10px;
+
+  background: #eef9fd;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Noto Sans JP",
+    sans-serif;
+
+  color: #333;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+}
+
+
+/* =========================
+   タイトル
+========================= */
+
+.title {
+  text-align: center;
+  font-size: clamp(22px, 6vw, 40px);
+  font-weight: 900;
+  margin: 5px 0;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 18px);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+
+/* =========================
+   カウンター
+========================= */
+
+.counter {
+  text-align: center;
+
+  font-size: clamp(18px, 5vw, 28px);
+
+  font-weight: 900;
+
+  margin: 8px 0 12px;
+}
+
+.counter strong {
+  font-size: 1.35em;
+}
+
+
+/* =========================
+   パズル
+========================= */
+
+.puzzle-area {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+#puzzleCanvas {
+
+  width: 100%;
+  max-width: 700px;
+
+  height: auto;
+
+  display: block;
+
+  background: #75cdea;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 5px 18px rgba(0,0,0,.18);
+
+  touch-action: manipulation;
+}
+
+
+/* =========================
+   操作パネル
+========================= */
+
+.panel {
+
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 12px;
+
+  margin-top: 12px;
+
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.1);
+}
+
+.panel-title {
+
+  text-align: center;
+
+  font-size: 17px;
+
+  font-weight: 900;
+
+  margin-bottom: 10px;
+}
+
+.controls {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  gap: 7px;
+}
+
+input[type="number"] {
+
+  width: 100px;
+
+  height: 46px;
+
+  border:
+    2px solid #aaa;
+
+  border-radius: 9px;
+
+  font-size: 19px;
+
+  text-align: center;
+}
+
+button {
+
+  min-height: 46px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  padding: 7px 14px;
+
+  font-size: 15px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+}
+
+button:active {
+
+  transform: scale(.96);
+}
+
+.open-btn {
+
+  background: #4dbfe8;
+
+  color: white;
+}
+
+.random-btn {
+
+  background: #8878ed;
+
+  color: white;
+}
+
+.image-btn {
+
+  background: #56b96c;
+
+  color: white;
+}
+
+.reset-btn {
+
+  background: #777;
+
+  color: white;
+}
+
+#imageInput {
+
+  display: none;
+}
+
+
+/* =========================
+   メッセージ
+========================= */
+
+.message {
+
+  text-align: center;
+
+  min-height: 27px;
+
+  margin-top: 9px;
+
+  font-size: 14px;
+
+  font-weight: 800;
+}
+
+
+/* =========================
+   ギフター名簿
+========================= */
+
+.gifter-panel {
+
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 12px;
+
+  margin-top: 12px;
+
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.1);
+}
+
+.gifter-title {
+
+  text-align: center;
+
+  font-size: 18px;
+
+  font-weight: 900;
+
+  margin-bottom: 4px;
+}
+
+.gifter-description {
+
+  text-align: center;
+
+  font-size: 12px;
+
+  color: #666;
+
+  margin-bottom: 10px;
+}
+
+
+/*
+   100人の入力欄
+*/
+
+.gifter-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 5px;
+
+  max-height: 430px;
+
+  overflow-y: auto;
+
+  padding-right: 3px;
+}
+
+.gifter-row {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  min-width: 0;
+}
+
+.gifter-number {
+
+  width: 32px;
+
+  flex-shrink: 0;
+
+  text-align: center;
+
+  font-size: 12px;
+
+  font-weight: 900;
+}
+
+.gifter-input {
+
+  width: 100%;
+
+  min-width: 0;
+
+  height: 34px;
+
+  padding:
+    3px 7px;
+
+  border:
+    1px solid #bbb;
+
+  border-radius: 6px;
+
+  font-size: 13px;
+}
+
+
+/*
+   OPEN済み表示
+*/
+
+.gifter-row.opened {
+
+  background: #e9f9ff;
+
+  border-radius: 6px;
+}
+
+.gifter-row.opened
+.gifter-number {
+
+  color: #149ac4;
+}
+
+
+/* =========================
+   説明
+========================= */
+
+.help {
+
+  margin-top: 10px;
+
+  padding: 11px;
+
+  background: white;
+
+  border-radius: 12px;
+
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+.help strong {
+
+  font-size: 15px;
+}
+
+
+/* =========================
+   ポップアップ
+========================= */
+
+.popup {
+
+  display: none;
+
+  position: fixed;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  width:
+    min(90%, 480px);
+
+  background: white;
+
+  border-radius: 20px;
+
+  padding: 25px;
+
+  text-align: center;
+
+  z-index: 1000;
+
+  box-shadow:
+    0 10px 40px
+    rgba(0,0,0,.3);
+}
+
+.popup.show {
+
+  display: block;
+}
+
+.popup-piece {
+
+  font-size: 22px;
+
+  font-weight: 900;
+}
+
+.popup-name {
+
+  margin-top: 8px;
+
+  font-size:
+    clamp(24px, 7vw, 42px);
+
+  font-weight: 900;
+
+  word-break: break-word;
+}
+
+.popup-message {
+
+  margin-top: 8px;
+
+  font-size: 17px;
+
+  font-weight: 800;
+}
+
+.popup-close {
+
+  margin-top: 18px;
+
+  background: #4dbfe8;
+
+  color: white;
+}
+
+
+/* =========================
+   完成画面
+========================= */
+
+.complete {
+
+  display: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 2000;
+
+  background:
+    rgba(255,255,255,.96);
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-direction: column;
+
+  text-align: center;
+}
+
+.complete.show {
+
+  display: flex;
+}
+
+.complete h2 {
+
+  margin: 0;
+
+  font-size:
+    clamp(38px, 10vw, 70px);
+
+  font-weight: 900;
+}
+
+.complete p {
+
+  font-size: 21px;
+
+  font-weight: 800;
+}
+
+
+/* =========================
+   スマホ
+========================= */
+
+@media(max-width:500px) {
+
+  body {
+    padding: 6px;
+  }
+
+  .panel,
+  .gifter-panel {
+    padding: 9px;
+  }
+
+  .gifter-grid {
+
+    grid-template-columns:
+      1fr;
+
+    max-height: 350px;
+  }
+
+  button {
+
+    flex: 1;
+
+    min-width: 90px;
+  }
+
+  input[type="number"] {
+
+    width: 90px;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+  <!-- タイトル -->
+
+  <div class="title">
+    🧩 100ピースチャレンジ
+  </div>
+
+  <div class="subtitle">
+    🎁 ウルトラスタンプで1ピースOPEN！
+  </div>
+
+
+  <!-- カウンター -->
+
+  <div class="counter">
+
+    <strong id="openCount">
+      0
+    </strong>
+
+    / 100 ピース OPEN
+
+  </div>
+
+
+  <!-- パズル -->
+
+  <div class="puzzle-area">
+
+    <canvas id="puzzleCanvas"></canvas>
+
+  </div>
+
+
+  <!-- 操作 -->
+
+  <div class="panel">
+
+    <div class="panel-title">
+
+      🎁 ギフトをもらったら番号をOPEN
+
+    </div>
+
+
+    <div class="controls">
+
+      <input
+        id="pieceNumber"
+        type="number"
+        min="1"
+        max="100"
+        placeholder="番号"
+      >
+
+
+      <button
+        class="open-btn"
+        onclick="openSelectedPiece()">
+
+        OPEN
+
+      </button>
+
+
+      <button
+        class="random-btn"
+        onclick="openRandomPiece()">
+
+        🎲 ランダム
+
+      </button>
+
+
+      <button
+        class="image-btn"
+        onclick="document
+          .getElementById('imageInput')
+          .click()">
+
+        🖼️ 画像変更
+
+      </button>
+
+
+      <button
+        class="reset-btn"
+        onclick="resetPuzzle()">
+
+        🔄 リセット
+
+      </button>
+
+    </div>
+
+
+    <input
+      id="imageInput"
+      type="file"
+      accept="image/*"
+    >
+
+
+    <div
+      class="message"
+      id="message">
+
+      番号を入力してOPENしてください
+
+    </div>
+
+  </div>
+
+
+  <!-- ギフター名簿 -->
+
+  <div class="gifter-panel">
+
+    <div class="gifter-title">
+
+      🎁 ギフター名簿
+
+    </div>
+
+    <div class="gifter-description">
+
+      番号ごとにギフターさんの名前を入力できます
+
+    </div>
+
+
+    <div
+      class="gifter-grid"
+      id="gifterGrid">
+
+    </div>
+
+  </div>
+
+
+  <!-- 説明 -->
+
+  <div class="help">
+
+    <strong>
+      🧩 配信での使い方
+    </strong>
+
+    <br>
+
+    ① ウルトラスタンプをもらう
+
+    <br>
+
+    ② 1〜100の番号を選んでもらう
+
+    <br>
+
+    ③ その番号のギフター名を入力
+
+    <br>
+
+    ④ 「OPEN」を押す
+
+    <br>
+
+    ⑤ その番号の画像が出現！
+
+    <br>
+
+    ⑥ 100ピース完成でコンプリート🎉
+
+  </div>
+
+
+</div>
+
+
+<!-- ギフター表示 -->
+
+<div
+  class="popup"
+  id="gifterPopup">
+
+  <div
+    class="popup-piece"
+    id="popupPiece">
+
+    🧩 1番 OPEN！
+
+  </div>
+
+
+  <div
+    class="popup-name"
+    id="popupName">
+
+    ギフターさん
+
+  </div>
+
+
+  <div
+    class="popup-message">
+
+    ウルトラスタンプありがとう！🎁
+
+  </div>
+
+
+  <button
+    class="popup-close"
+    onclick="closePopup()">
+
+    閉じる
+
+  </button>
+
+</div>
+
+
+<!-- 完成 -->
+
+<div
+  class="complete"
+  id="completeScreen">
+
+  <h2>
+    🎉 COMPLETE! 🎉
+  </h2>
+
+  <p>
+    100ピース完成しました！🧩
+  </p>
+
+  <button
+    class="open-btn"
+    onclick="closeComplete()">
+
+    パズルを見る
+
+  </button>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   基本設定
+===================================================== */
+
+const COLS = 10;
+
+const ROWS = 10;
+
+const TOTAL = 100;
+
+
+const canvas =
+document.getElementById(
+  "puzzleCanvas"
+);
+
+const ctx =
+canvas.getContext("2d");
+
+
+let puzzleWidth = 0;
+
+let puzzleHeight = 0;
+
+let pieceWidth = 0;
+
+let pieceHeight = 0;
+
+
+/* =====================================================
+   OPEN状態
+===================================================== */
+
+let opened =
+new Array(TOTAL).fill(false);
+
+
+/* =====================================================
+   ギフター名
+===================================================== */
+
+let gifterNames =
+new Array(TOTAL).fill("");
+
+
+/* =====================================================
+   ギフター名入力欄を100個作成
+===================================================== */
+
+const gifterGrid =
+document.getElementById(
+  "gifterGrid"
+);
+
+
+for(let i = 0; i < TOTAL; i++){
+
+  const row =
+  document.createElement("div");
+
+  row.className =
+  "gifter-row";
+
+
+  const number =
+  document.createElement("div");
+
+  number.className =
+  "gifter-number";
+
+  number.textContent =
+  i + 1;
+
+
+  const input =
+  document.createElement("input");
+
+  input.className =
+  "gifter-input";
+
+  input.placeholder =
+  "ギフター名";
+
+  input.dataset.index =
+  i;
+
+
+  input.addEventListener(
+    "input",
+    function(){
+
+      gifterNames[i] =
+      this.value;
+
+    }
+  );
+
+
+  row.appendChild(number);
+
+  row.appendChild(input);
+
+  gifterGrid.appendChild(row);
+
+}
+
+
+/* =====================================================
+   ジグソー境界
+===================================================== */
+
+let verticalEdges = [];
+
+let horizontalEdges = [];
+
+
+function createEdges(){
+
+  verticalEdges = [];
+
+  horizontalEdges = [];
+
+
+  /*
+    縦方向
+  */
+
+  for(
+    let y = 0;
+    y < ROWS;
+    y++
+  ){
+
+    const row = [];
+
+
+    for(
+      let x = 0;
+      x <= COLS;
+      x++
+    ){
+
+      if(
+        x === 0 ||
+        x === COLS
+      ){
+
+        row.push(0);
+
+      }else{
+
+        row.push(
+          Math.random() > .5
+          ? 1
+          : -1
+        );
+
+      }
+
+    }
+
+    verticalEdges.push(row);
+
+  }
+
+
+  /*
+    横方向
+  */
+
+  for(
+    let y = 0;
+    y <= ROWS;
+    y++
+  ){
+
+    const row = [];
+
+
+    for(
+      let x = 0;
+      x < COLS;
+      x++
+    ){
+
+      if(
+        y === 0 ||
+        y === ROWS
+      ){
+
+        row.push(0);
+
+      }else{
+
+        row.push(
+          Math.random() > .5
+          ? 1
+          : -1
+        );
+
+      }
+
+    }
+
+    horizontalEdges.push(row);
+
+  }
+
+}
+
+
+/* =====================================================
+   画像
+===================================================== */
+
+let image =
+new Image();
+
+image.crossOrigin =
+"anonymous";
+
+
+image.onload =
+function(){
+
+  setupCanvas();
+
+  drawPuzzle();
+
+};
+
+
+image.src =
+"https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80";
+
+
+/* =====================================================
+   Canvas設定
+===================================================== */
+
+function setupCanvas(){
+
+  const width =
+  Math.min(
+    window.innerWidth - 20,
+    700
+  );
+
+
+  const ratio =
+  image.naturalHeight /
+  image.naturalWidth;
+
+
+  puzzleWidth =
+  width;
+
+
+  puzzleHeight =
+  width * ratio;
+
+
+  canvas.width =
+  puzzleWidth * 2;
+
+
+  canvas.height =
+  puzzleHeight * 2;
+
+
+  canvas.style.width =
+  puzzleWidth + "px";
+
+
+  canvas.style.height =
+  puzzleHeight + "px";
+
+
+  ctx.setTransform(
+    2,
+    0,
+    0,
+    2,
+    0,
+    0
+  );
+
+
+  pieceWidth =
+  puzzleWidth / COLS;
+
+
+  pieceHeight =
+  puzzleHeight / ROWS;
+
+}
+
+
+/* =====================================================
+   ピース形状
+===================================================== */
+
+function createPiecePath(
+  col,
+  row
+){
+
+  const x =
+  col * pieceWidth;
+
+  const y =
+  row * pieceHeight;
+
+  const w =
+  pieceWidth;
+
+  const h =
+  pieceHeight;
+
+  const tab =
+  Math.min(w,h) * .22;
+
+
+  const path =
+  new Path2D();
+
+
+  /*
+    上
+  */
+
+  path.moveTo(x,y);
+
+
+  if(row === 0){
+
+    path.lineTo(
+      x+w,
+      y
+    );
+
+  }else{
+
+    const type =
+    horizontalEdges[row][col];
+
+    path.lineTo(
+      x+w*.35,
+      y
+    );
+
+    const mid =
+    x+w*.5;
+
+
+    if(type === 1){
+
+      path.bezierCurveTo(
+        x+w*.40,
+        y,
+        mid-tab,
+        y-tab,
+        mid,
+        y-tab
+      );
+
+      path.bezierCurveTo(
+        mid+tab,
+        y-tab,
+        x+w*.60,
+        y,
+        x+w*.65,
+        y
+      );
+
+    }else{
+
+      path.bezierCurveTo(
+        x+w*.40,
+        y,
+        mid-tab,
+        y+tab,
+        mid,
+        y+tab
+      );
+
+      path.bezierCurveTo(
+        mid+tab,
+        y+tab,
+        x+w*.60,
+        y,
+        x+w*.65,
+        y
+      );
+
+    }
+
+
+    path.lineTo(
+      x+w,
+      y
+    );
+
+  }
+
+
+  /*
+    右
+  */
+
+  if(col === COLS-1){
+
+    path.lineTo(
+      x+w,
+      y+h
+    );
+
+  }else{
+
+    const type =
+    verticalEdges[row][col+1];
+
+
+    path.lineTo(
+      x+w,
+      y+h*.35
+    );
+
+
+    const mid =
+    y+h*.5;
+
+
+    if(type === 1){
+
+      path.bezierCurveTo(
+        x+w,
+        y+h*.40,
+        x+w+tab,
+        mid-tab,
+        x+w+tab,
+        mid
+      );
+
+      path.bezierCurveTo(
+        x+w+tab,
+        mid+tab,
+        x+w,
+        y+h*.60,
+        x+w,
+        y+h*.65
+      );
+
+    }else{
+
+      path.bezierCurveTo(
+        x+w,
+        y+h*.40,
+        x+w-tab,
+        mid-tab,
+        x+w-tab,
+        mid
+      );
+
+      path.bezierCurveTo(
+        x+w-tab,
+        mid+tab,
+        x+w,
+        y+h*.60,
+        x+w,
+        y+h*.65
+      );
+
+    }
+
+
+    path.lineTo(
+      x+w,
+      y+h
+    );
+
+  }
+
+
+  /*
+    下
+  */
+
+  if(row === ROWS-1){
+
+    path.lineTo(
+      x,
+      y+h
+    );
+
+  }else{
+
+    const type =
+    horizontalEdges[row+1][col];
+
+
+    path.lineTo(
+      x+w*.65,
+      y+h
+    );
+
+
+    const mid =
+    x+w*.5;
+
+
+    if(type === 1){
+
+      path.bezierCurveTo(
+        x+w*.60,
+        y+h,
+        mid+tab,
+        y+h+tab,
+        mid,
+        y+h+tab
+      );
+
+      path.bezierCurveTo(
+        mid-tab,
+        y+h+tab,
+        x+w*.40,
+        y+h,
+        x+w*.35,
+        y+h
+      );
+
+    }else{
+
+      path.bezierCurveTo(
+        x+w*.60,
+        y+h,
+        mid+tab,
+        y+h-tab,
+        mid,
+        y+h-tab
+      );
+
+      path.bezierCurveTo(
+        mid-tab,
+        y+h-tab,
+        x+w*.40,
+        y+h,
+        x+w*.35,
+        y+h
+      );
+
+    }
+
+
+    path.lineTo(
+      x,
+      y+h
+    );
+
+  }
+
+
+  /*
+    左
+  */
+
+  if(col === 0){
+
+    path.lineTo(
+      x,
+      y
+    );
+
+  }else{
+
+    const type =
+    verticalEdges[row][col];
+
+
+    path.lineTo(
+      x,
+      y+h*.65
+    );
+
+
+    const mid =
+    y+h*.5;
+
+
+    if(type === 1){
+
+      path.bezierCurveTo(
+        x,
+        y+h*.60,
+        x-tab,
+        mid+tab,
+        x-tab,
+        mid
+      );
+
+      path.bezierCurveTo(
+        x-tab,
+        mid-tab,
+        x,
+        y+h*.40,
+        x,
+        y+h*.35
+      );
+
+    }else{
+
+      path.bezierCurveTo(
+        x,
+        y+h*.60,
+        x+tab,
+        mid+tab,
+        x+tab,
+        mid
+      );
+
+      path.bezierCurveTo(
+        x+tab,
+        mid-tab,
+        x,
+        y+h*.40,
+        x,
+        y+h*.35
+      );
+
+    }
+
+
+    path.lineTo(
+      x,
+      y
+    );
+
+  }
+
+
+  path.closePath();
+
+  return path;
+
+}
+
+
+/* =====================================================
+   パズル描画
+===================================================== */
+
+function drawPuzzle(){
+
+  ctx.clearRect(
+    0,
+    0,
+    puzzleWidth,
+    puzzleHeight
+  );
+
+
+  for(
+    let row = 0;
+    row < ROWS;
+    row++
+  ){
+
+    for(
+      let col = 0;
+      col < COLS;
+      col++
+    ){
+
+      const index =
+      row * COLS + col;
+
+
+      const path =
+      createPiecePath(
+        col,
+        row
+      );
+
+
+      /*
+        OPEN済み
+      */
+
+      if(opened[index]){
+
+        ctx.save();
+
+        ctx.clip(path);
+
+
+        ctx.drawImage(
+          image,
+          0,
+          0,
+          puzzleWidth,
+          puzzleHeight
+        );
+
+
+        ctx.restore();
+
+
+      }else{
+
+        /*
+          未OPEN
+        */
+
+        ctx.fillStyle =
+        "#67c9eb";
+
+        ctx.fill(path);
+
+
+        /*
+          番号
+        */
+
+        ctx.fillStyle =
+        "white";
+
+        ctx.font =
+        "900 " +
+        Math.max(
+          10,
+          pieceWidth*.27
+        ) +
+        "px Arial";
+
+        ctx.textAlign =
+        "center";
+
+        ctx.textBaseline =
+        "middle";
+
+
+        ctx.fillText(
+          index+1,
+          col*pieceWidth+
+          pieceWidth/2,
+          row*pieceHeight+
+          pieceHeight/2
+        );
+
+      }
+
+
+      /*
+        ピース境界
+      */
+
+      ctx.strokeStyle =
+      "rgba(255,255,255,.95)";
+
+      ctx.lineWidth = 2;
+
+      ctx.stroke(path);
+
+    }
+
+  }
+
+}
+
+
+/* =====================================================
+   指定番号OPEN
+===================================================== */
+
+function openSelectedPiece(){
+
+  const input =
+  document.getElementById(
+    "pieceNumber"
+  );
+
+
+  const number =
+  parseInt(input.value);
+
+
+  if(
+    isNaN(number) ||
+    number < 1 ||
+    number > 100
+  ){
+
+    showMessage(
+      "1〜100の番号を入力してください"
+    );
+
+    return;
+
+  }
+
+
+  openPiece(number - 1);
+
+  input.value = "";
+
+}
+
+
+/* =====================================================
+   ピースOPEN本体
+===================================================== */
+
+function openPiece(index){
+
+  if(opened[index]){
+
+    showMessage(
+      "🧩 " +
+      (index+1) +
+      "番はすでにOPEN済みです"
+    );
+
+    return;
+
+  }
+
+
+  opened[index] = true;
+
+
+  /*
+    名簿の行をOPEN済みにする
+  */
+
+  const rows =
+  document.querySelectorAll(
+    ".gifter-row"
+  );
+
+
+  if(rows[index]){
+
+    rows[index]
+      .classList
+      .add("opened");
+
+  }
+
+
+  drawPuzzle();
+
+  updateCounter();
+
+
+  /*
+    ギフター名を取得
+  */
+
+  const name =
+  gifterNames[index].trim();
+
+
+  document.getElementById(
+    "popupPiece"
+  ).textContent =
+    "🧩 " +
+    (index+1) +
+    "番 OPEN！";
+
+
+  document.getElementById(
+    "popupName"
+  ).textContent =
+    name || "ギフターさん";
+
+
+  document.getElementById(
+    "gifterPopup"
+  )
+  .classList
+  .add("show");
+
+
+  showMessage(
+    "🎁 " +
+    (index+1) +
+    "番をOPENしました！"
+  );
+
+
+  checkComplete();
+
+}
+
+
+/* =====================================================
+   ランダムOPEN
+===================================================== */
+
+function openRandomPiece(){
+
+  const closed = [];
+
+
+  for(
+    let i=0;
+    i<TOTAL;
+    i++
+  ){
+
+    if(!opened[i]){
+
+      closed.push(i);
+
+    }
+
+  }
+
+
+  if(closed.length === 0){
+
+    checkComplete();
+
+    return;
+
+  }
+
+
+  const index =
+  closed[
+    Math.floor(
+      Math.random() *
+      closed.length
+    )
+  ];
+
+
+  openPiece(index);
+
+}
+
+
+/* =====================================================
+   カウンター
+===================================================== */
+
+function updateCounter(){
+
+  const count =
+  opened.filter(Boolean).length;
+
+
+  document.getElementById(
+    "openCount"
+  ).textContent =
+  count;
+
+}
+
+
+/* =====================================================
+   メッセージ
+===================================================== */
+
+function showMessage(text){
+
+  document.getElementById(
+    "message"
+  ).textContent =
+  text;
+
+}
+
+
+/* =====================================================
+   ポップアップを閉じる
+===================================================== */
+
+function closePopup(){
+
+  document.getElementById(
+    "gifterPopup"
+  )
+  .classList
+  .remove("show");
+
+}
+
+
+/* =====================================================
+   完成判定
+===================================================== */
+
+function checkComplete(){
+
+  const count =
+  opened.filter(Boolean).length;
+
+
+  if(count === TOTAL){
+
+    setTimeout(
+      function(){
+
+        document.getElementById(
+          "completeScreen"
+        )
+        .classList
+        .add("show");
+
+      },
+      600
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   完成画面を閉じる
+===================================================== */
+
+function closeComplete(){
+
+  document.getElementById(
+    "completeScreen"
+  )
+  .classList
+  .remove("show");
+
+}
+
+
+/* =====================================================
+   リセット
+===================================================== */
+
+function resetPuzzle(){
+
+  if(
+    !confirm(
+      "パズルを最初からやり直しますか？"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  opened =
+  new Array(TOTAL)
+  .fill(false);
+
+
+  createEdges();
+
+
+  document
+    .querySelectorAll(".gifter-row")
+    .forEach(
+      row =>
+      row.classList
+        .remove("opened")
+    );
+
+
+  updateCounter();
+
+  drawPuzzle();
+
+
+  showMessage(
+    "🔄 パズルをリセットしました"
+  );
+
+}
+
+
+/* =====================================================
+   画像変更
+===================================================== */
+
+document
+.getElementById("imageInput")
+.addEventListener(
+  "change",
+  function(event){
+
+    const file =
+    event.target.files[0];
+
+
+    if(!file){
+
+      return;
+
+    }
+
+
+    const reader =
+    new FileReader();
+
+
+    reader.onload =
+    function(e){
+
+      const newImage =
+      new Image();
+
+
+      newImage.onload =
+      function(){
+
+        image =
+        newImage;
+
+
+        opened =
+        new Array(TOTAL)
+        .fill(false);
+
+
+        createEdges();
+
+        setupCanvas();
+
+        updateCounter();
+
+        drawPuzzle();
+
+
+        document
+          .querySelectorAll(
+            ".gifter-row"
+          )
+          .forEach(
+            row =>
+            row.classList
+              .remove("opened")
+          );
+
+
+        showMessage(
+          "🖼️ 新しい画像に変更しました"
+        );
+
+      };
+
+
+      newImage.src =
+      e.target.result;
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+  }
+);
+
+
+/* =====================================================
+   パズルをタップしてOPEN
+===================================================== */
+
+canvas.addEventListener(
+  "click",
+  function(event){
+
+    const rect =
+    canvas.getBoundingClientRect();
+
+
+    const scaleX =
+    puzzleWidth /
+    rect.width;
+
+
+    const scaleY =
+    puzzleHeight /
+    rect.height;
+
+
+    const x =
+    (event.clientX -
+     rect.left) *
+    scaleX;
+
+
+    const y =
+    (event.clientY -
+     rect.top) *
+    scaleY;
+
+
+    const col =
+    Math.floor(
+      x / pieceWidth
+    );
+
+
+    const row =
+    Math.floor(
+      y / pieceHeight
+    );
+
+
+    if(
+      col < 0 ||
+      col >= COLS ||
+      row < 0 ||
+      row >= ROWS
+    ){
+
+      return;
+
+    }
+
+
+    const index =
+    row*COLS+col;
+
+
+    if(!opened[index]){
+
+      openPiece(index);
+
+    }else{
+
+      showMessage(
+        "🧩 " +
+        (index+1) +
+        "番はOPEN済みです"
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   画面サイズ変更
+===================================================== */
+
+window.addEventListener(
+  "resize",
+  function(){
+
+    setupCanvas();
+
+    drawPuzzle();
+
+  }
+);
+
+
+/* =====================================================
+   初期化
+===================================================== */
+
+createEdges();
+
+</script>
+
+</body>
+</html>
