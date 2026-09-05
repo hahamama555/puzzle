@@ -180,9 +180,10 @@ canvas{
   text-align:center;
 }
 
-/* =====================================
+
+/* ================================
    ありがとうモーダル
-===================================== */
+================================ */
 
 .modal{
   position:fixed;
@@ -237,9 +238,10 @@ canvas{
   word-break:break-word;
 }
 
-/* =====================================
+
+/* ================================
    完成
-===================================== */
+================================ */
 
 .complete{
   position:fixed;
@@ -275,9 +277,10 @@ canvas{
   line-height:1.8;
 }
 
-/* =====================================
+
+/* ================================
    スマホ
-===================================== */
+================================ */
 
 @media(max-width:600px){
 
@@ -312,11 +315,9 @@ canvas{
 
 <div class="container">
 
-
 <h1>
 🎁 100ピース ギフトパズル
 </h1>
-
 
 <div class="description">
 
@@ -331,20 +332,16 @@ canvas{
 <div class="controls">
 
 <label>
-
 <input
   type="file"
   id="imageInput"
   accept="image/*"
 >
-
 </label>
-
 
 <button onclick="openRandomPiece()">
 🎲 ランダムOPEN
 </button>
-
 
 <button onclick="resetPuzzle()">
 🔄 リセット
@@ -382,9 +379,9 @@ canvas{
 </div>
 
 
-<!-- =====================================
+<!-- ================================
      ありがとう
-===================================== -->
+================================ -->
 
 <div
   class="modal"
@@ -418,9 +415,9 @@ canvas{
 </div>
 
 
-<!-- =====================================
+<!-- ================================
      完成
-===================================== -->
+================================ -->
 
 <div
   class="complete"
@@ -497,11 +494,6 @@ let image = new Image();
 
 image.crossOrigin = "anonymous";
 
-
-/*
-   初期画像
-*/
-
 image.src =
 "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80";
 
@@ -512,39 +504,22 @@ image.src =
 
 function generateEdges(){
 
-  /*
-     縦の境界
-
-     +1 / -1 は凸凹の向き
-  */
-
   verticalEdges = [];
 
-  for(
-    let r = 0;
-    r < ROWS;
-    r++
-  ){
+  for(let r = 0; r < ROWS; r++){
 
     const row = [];
 
-    for(
-      let c = 0;
-      c <= COLS;
-      c++
-    ){
+    for(let c = 0; c <= COLS; c++){
 
-      if(
-        c === 0 ||
-        c === COLS
-      ){
+      if(c === 0 || c === COLS){
 
         row.push(0);
 
       }else{
 
         row.push(
-          Math.random() < .5
+          Math.random() < 0.5
             ? 1
             : -1
         );
@@ -558,37 +533,22 @@ function generateEdges(){
   }
 
 
-  /*
-     横の境界
-  */
-
   horizontalEdges = [];
 
-  for(
-    let r = 0;
-    r <= ROWS;
-    r++
-  ){
+  for(let r = 0; r <= ROWS; r++){
 
     const row = [];
 
-    for(
-      let c = 0;
-      c < COLS;
-      c++
-    ){
+    for(let c = 0; c < COLS; c++){
 
-      if(
-        r === 0 ||
-        r === ROWS
-      ){
+      if(r === 0 || r === ROWS){
 
         row.push(0);
 
       }else{
 
         row.push(
-          Math.random() < .5
+          Math.random() < 0.5
             ? 1
             : -1
         );
@@ -605,57 +565,41 @@ function generateEdges(){
 
 
 /* =====================================
-   ジグソーピース形状
+   ジグソー形状
+   ★ 隣同士で完全共有する
 ===================================== */
 
 function createPiecePath(row,col){
 
-  const cellW =
-    W / COLS;
+  const cellW = W / COLS;
+  const cellH = H / ROWS;
 
-  const cellH =
-    H / ROWS;
-
-  const x =
-    col * cellW;
-
-  const y =
-    row * cellH;
-
+  const x = col * cellW;
+  const y = row * cellH;
 
   /*
-     凸部分
-
-     画像に合わせて
-     少し丸みを大きめに
+     凸凹の大きさ
   */
 
   const tab =
-    Math.min(
-      cellW,
-      cellH
-    ) * 0.25;
+    Math.min(cellW,cellH) * 0.23;
 
 
-  const path =
-    new Path2D();
+  const path = new Path2D();
 
 
   /* =================================
      上
   ================================= */
 
-  path.moveTo(
-    x,
-    y
-  );
-
-
-  const topEdge =
+  const top =
     horizontalEdges[row][col];
 
 
-  if(topEdge === 0){
+  path.moveTo(x,y);
+
+
+  if(top === 0){
 
     path.lineTo(
       x + cellW,
@@ -665,34 +609,29 @@ function createPiecePath(row,col){
   }else{
 
     path.lineTo(
-      x + cellW * .35,
+      x + cellW * 0.35,
       y
     );
 
-
     /*
-       上側のピース
-
-       下辺は
-       topEdge方向に出る
+       上側へ出る場合
+       -top
     */
+
+    const d = -top * tab;
 
     path.bezierCurveTo(
 
-      x + cellW * .40,
+      x + cellW * 0.40,
+      y + d,
 
-      y + topEdge * tab,
+      x + cellW * 0.60,
+      y + d,
 
-      x + cellW * .60,
-
-      y + topEdge * tab,
-
-      x + cellW * .65,
-
+      x + cellW * 0.65,
       y
 
     );
-
 
     path.lineTo(
       x + cellW,
@@ -706,11 +645,11 @@ function createPiecePath(row,col){
      右
   ================================= */
 
-  const rightEdge =
+  const right =
     verticalEdges[row][col + 1];
 
 
-  if(rightEdge === 0){
+  if(right === 0){
 
     path.lineTo(
       x + cellW,
@@ -721,26 +660,24 @@ function createPiecePath(row,col){
 
     path.lineTo(
       x + cellW,
-      y + cellH * .35
+      y + cellH * 0.35
     );
 
+    const d =
+      right * tab;
 
     path.bezierCurveTo(
 
-      x + cellW + rightEdge * tab,
+      x + cellW + d,
+      y + cellH * 0.40,
 
-      y + cellH * .40,
-
-      x + cellW + rightEdge * tab,
-
-      y + cellH * .60,
+      x + cellW + d,
+      y + cellH * 0.60,
 
       x + cellW,
-
-      y + cellH * .65
+      y + cellH * 0.65
 
     );
-
 
     path.lineTo(
       x + cellW,
@@ -754,11 +691,11 @@ function createPiecePath(row,col){
      下
   ================================= */
 
-  const bottomEdge =
+  const bottom =
     horizontalEdges[row + 1][col];
 
 
-  if(bottomEdge === 0){
+  if(bottom === 0){
 
     path.lineTo(
       x,
@@ -767,33 +704,30 @@ function createPiecePath(row,col){
 
   }else{
 
+    /*
+       右から左へ進む
+    */
+
     path.lineTo(
-      x + cellW * .65,
+      x + cellW * 0.65,
       y + cellH
     );
 
-
-    /*
-       下辺は
-       上側とは逆向き
-    */
+    const d =
+      bottom * tab;
 
     path.bezierCurveTo(
 
-      x + cellW * .60,
+      x + cellW * 0.60,
+      y + cellH + d,
 
-      y - bottomEdge * tab + cellH,
+      x + cellW * 0.40,
+      y + cellH + d,
 
-      x + cellW * .40,
-
-      y - bottomEdge * tab + cellH,
-
-      x + cellW * .35,
-
+      x + cellW * 0.35,
       y + cellH
 
     );
-
 
     path.lineTo(
       x,
@@ -807,11 +741,11 @@ function createPiecePath(row,col){
      左
   ================================= */
 
-  const leftEdge =
+  const left =
     verticalEdges[row][col];
 
 
-  if(leftEdge === 0){
+  if(left === 0){
 
     path.lineTo(
       x,
@@ -820,33 +754,30 @@ function createPiecePath(row,col){
 
   }else{
 
+    /*
+       下から上へ進む
+    */
+
     path.lineTo(
       x,
-      y + cellH * .65
+      y + cellH * 0.65
     );
 
-
-    /*
-       左辺は
-       右側ピースとは逆向き
-    */
+    const d =
+      -left * tab;
 
     path.bezierCurveTo(
 
-      x - leftEdge * tab,
+      x + d,
+      y + cellH * 0.60,
 
-      y + cellH * .60,
-
-      x - leftEdge * tab,
-
-      y + cellH * .40,
+      x + d,
+      y + cellH * 0.40,
 
       x,
-
-      y + cellH * .35
+      y + cellH * 0.35
 
     );
-
 
     path.lineTo(
       x,
@@ -870,6 +801,7 @@ function createPiecePath(row,col){
 function drawImage(){
 
   if(
+    !image ||
     !image.complete ||
     !image.naturalWidth
   ){
@@ -918,25 +850,8 @@ function drawImage(){
 function drawPuzzle(){
 
   /*
-     ★★★★★★★★★★★★★★★★★
-
-     ここが今回の重要ポイント
-
-     最初に画像全体を描かない。
-
-     OPENしたピースだけに
-     画像を描く。
-
-     これで未OPEN部分から
-     画像が漏れることがない。
-
-     ★★★★★★★★★★★★★★★★★
+     ★ 最初は完全に水色
   */
-
-
-  /* =================================
-     ① 全体を水色
-  ================================= */
 
   ctx.clearRect(
     0,
@@ -945,10 +860,8 @@ function drawPuzzle(){
     H
   );
 
-
   ctx.fillStyle =
     "#9eddf4";
-
 
   ctx.fillRect(
     0,
@@ -958,15 +871,11 @@ function drawPuzzle(){
   );
 
 
-  /* =================================
-     ② OPENしたピースだけ画像
-  ================================= */
+  /*
+     ★ OPENピースだけ画像
+  */
 
-  for(
-    let i = 0;
-    i < TOTAL;
-    i++
-  ){
+  for(let i = 0; i < TOTAL; i++){
 
     if(!opened[i]){
       continue;
@@ -974,10 +883,7 @@ function drawPuzzle(){
 
 
     const row =
-      Math.floor(
-        i / COLS
-      );
-
+      Math.floor(i / COLS);
 
     const col =
       i % COLS;
@@ -992,17 +898,14 @@ function drawPuzzle(){
 
     ctx.save();
 
-
     /*
        ピース形状の内側だけ
-       画像を表示
+       画像を描画
     */
 
     ctx.clip(path);
 
-
     drawImage();
-
 
     ctx.restore();
 
@@ -1010,13 +913,13 @@ function drawPuzzle(){
 
 
   /* =================================
-     ③ 境界線
+     境界線
   ================================= */
 
-  ctx.lineWidth = 2.5;
+  ctx.lineWidth = 3;
 
   ctx.strokeStyle =
-    "rgba(65,65,65,.80)";
+    "rgba(55,65,70,.85)";
 
   ctx.lineJoin =
     "round";
@@ -1025,24 +928,15 @@ function drawPuzzle(){
     "round";
 
 
-  for(
-    let r = 0;
-    r < ROWS;
-    r++
-  ){
+  for(let r = 0; r < ROWS; r++){
 
-    for(
-      let c = 0;
-      c < COLS;
-      c++
-    ){
+    for(let c = 0; c < COLS; c++){
 
       const path =
         createPiecePath(
           r,
           c
         );
-
 
       ctx.stroke(path);
 
@@ -1052,14 +946,11 @@ function drawPuzzle(){
 
 
   /* =================================
-     ④ 未OPEN番号
+     未OPEN番号
   ================================= */
 
-  const cellW =
-    W / COLS;
-
-  const cellH =
-    H / ROWS;
+  const cellW = W / COLS;
+  const cellH = H / ROWS;
 
 
   ctx.textAlign =
@@ -1069,11 +960,7 @@ function drawPuzzle(){
     "middle";
 
 
-  for(
-    let i = 0;
-    i < TOTAL;
-    i++
-  ){
+  for(let i = 0; i < TOTAL; i++){
 
     if(opened[i]){
       continue;
@@ -1081,10 +968,7 @@ function drawPuzzle(){
 
 
     const row =
-      Math.floor(
-        i / COLS
-      );
-
+      Math.floor(i / COLS);
 
     const col =
       i % COLS;
@@ -1098,15 +982,14 @@ function drawPuzzle(){
 
 
     /*
-       番号の白丸
+       白い番号丸
     */
 
     ctx.fillStyle =
-      "rgba(255,255,255,.92)";
+      "rgba(255,255,255,.94)";
 
 
     ctx.beginPath();
-
 
     ctx.arc(
 
@@ -1114,16 +997,12 @@ function drawPuzzle(){
 
       y + cellH / 2,
 
-      Math.min(
-        cellW,
-        cellH
-      ) * .17,
+      Math.min(cellW,cellH) * .17,
 
       0,
       Math.PI * 2
 
     );
-
 
     ctx.fill();
 
@@ -1139,10 +1018,7 @@ function drawPuzzle(){
     ctx.font =
       "bold " +
       Math.floor(
-        Math.min(
-          cellW,
-          cellH
-        ) * .18
+        Math.min(cellW,cellH) * .18
       ) +
       "px Arial";
 
@@ -1177,17 +1053,10 @@ function createGifterList(){
   grid.innerHTML = "";
 
 
-  for(
-    let i = 0;
-    i < TOTAL;
-    i++
-  ){
+  for(let i = 0; i < TOTAL; i++){
 
     const row =
-      document.createElement(
-        "div"
-      );
-
+      document.createElement("div");
 
     row.className =
       "gifter-row";
@@ -1207,32 +1076,23 @@ function createGifterList(){
 
 
     const number =
-      document.createElement(
-        "div"
-      );
-
+      document.createElement("div");
 
     number.className =
       "gifter-number";
-
 
     number.textContent =
       i + 1;
 
 
     const input =
-      document.createElement(
-        "input"
-      );
-
+      document.createElement("input");
 
     input.className =
       "gifter-input";
 
-
     input.placeholder =
       "ギフターさんの名前";
-
 
     input.value =
       gifterNames[i];
@@ -1250,14 +1110,10 @@ function createGifterList(){
 
 
     const status =
-      document.createElement(
-        "div"
-      );
-
+      document.createElement("div");
 
     status.className =
       "gifter-status";
-
 
     status.textContent =
       opened[i]
@@ -1265,22 +1121,13 @@ function createGifterList(){
         : "";
 
 
-    row.appendChild(
-      number
-    );
+    row.appendChild(number);
 
-    row.appendChild(
-      input
-    );
+    row.appendChild(input);
 
-    row.appendChild(
-      status
-    );
+    row.appendChild(status);
 
-
-    grid.appendChild(
-      row
-    );
+    grid.appendChild(row);
 
   }
 
@@ -1316,7 +1163,7 @@ function cleanName(name){
 
 
 /* =====================================
-   ピースOPEN
+   OPEN
 ===================================== */
 
 function openPiece(index){
@@ -1357,19 +1204,10 @@ function openPiece(index){
     updateCounter();
 
 
-    /*
-       OPENしたピースだけ
-       画像を追加表示
-    */
-
     drawPuzzle();
 
   }
 
-
-  /*
-     ありがとう表示
-  */
 
   document.getElementById(
     "popupPiece"
@@ -1409,7 +1247,6 @@ canvas.addEventListener(
 
     const scaleX =
       W / rect.width;
-
 
     const scaleY =
       H / rect.height;
@@ -1468,11 +1305,7 @@ function openRandomPiece(){
   const remaining = [];
 
 
-  for(
-    let i = 0;
-    i < TOTAL;
-    i++
-  ){
+  for(let i = 0; i < TOTAL; i++){
 
     if(!opened[i]){
 
@@ -1551,9 +1384,7 @@ function updateGifterStatus(index){
 function updateCounter(){
 
   const count =
-    opened.filter(
-      Boolean
-    ).length;
+    opened.filter(Boolean).length;
 
 
   document.getElementById(
@@ -1565,15 +1396,13 @@ function updateCounter(){
 
 
 /* =====================================
-   完成判定
+   完成
 ===================================== */
 
 function checkComplete(){
 
   if(
-    opened.every(
-      Boolean
-    )
+    opened.every(Boolean)
   ){
 
     setTimeout(
@@ -1639,17 +1468,9 @@ function resetPuzzle(){
 
 
   if(!ok){
-
     return;
-
   }
 
-
-  /*
-     OPEN状態だけリセット
-
-     名前・画像は残す
-  */
 
   opened =
     new Array(
@@ -1658,8 +1479,7 @@ function resetPuzzle(){
 
 
   /*
-     パズルの形も
-     新しくする
+     新しい凸凹
   */
 
   generateEdges();
@@ -1667,9 +1487,7 @@ function resetPuzzle(){
 
   createGifterList();
 
-
   updateCounter();
-
 
   drawPuzzle();
 
@@ -1681,9 +1499,7 @@ function resetPuzzle(){
 ===================================== */
 
 document
-  .getElementById(
-    "imageInput"
-  )
+  .getElementById("imageInput")
   .addEventListener(
     "change",
     function(e){
@@ -1693,9 +1509,7 @@ document
 
 
       if(!file){
-
         return;
-
       }
 
 
@@ -1706,19 +1520,19 @@ document
       reader.onload =
         function(event){
 
-          image =
+          const newImage =
             new Image();
 
 
-          image.onload =
+          newImage.onload =
             function(){
 
-              /*
-                 ★画像を変更しても
-                 OPEN済み部分だけ表示
+              image =
+                newImage;
 
-                 未OPEN部分には
-                 絶対に画像を描かない
+              /*
+                 OPEN済み部分だけ
+                 新しい画像に変更
               */
 
               drawPuzzle();
@@ -1726,15 +1540,13 @@ document
             };
 
 
-          image.src =
+          newImage.src =
             event.target.result;
 
         };
 
 
-      reader.readAsDataURL(
-        file
-      );
+      reader.readAsDataURL(file);
 
     }
   );
@@ -1744,14 +1556,22 @@ document
    初期化
 ===================================== */
 
+generateEdges();
+
+createGifterList();
+
+updateCounter();
+
+drawPuzzle();
+
+
 image.onload =
   function(){
 
-    generateEdges();
-
-    createGifterList();
-
-    updateCounter();
+    /*
+       画像が読み込まれても
+       未OPEN部分には描画しない
+    */
 
     drawPuzzle();
 
@@ -1760,5 +1580,4 @@ image.onload =
 </script>
 
 </body>
-
 </html>
